@@ -6,32 +6,25 @@ from src.scripts.chembl.chembl_ftp_scripts import (
 )
 from src.utils.io import save_df_asset
 from pandas import DataFrame
-from dagster import (
-    get_dagster_logger,
-    asset,
-    AssetKey,
-    AssetMaterialization,
-    multi_asset,
-    AssetOut,
-    Output,
-)
+from dagster import Output, AssetKey, AssetMaterialization, AssetOut, asset, multi_asset
+
+
+"""Extract"""
 
 
 @asset(group_name="chembl_ftp")
 def chembl_structures_asset() -> DataFrame:
     df = get_chembl_structures()
-    get_dagster_logger().info(f"Length of chembl structures: {len(df)}")
     return df
 
 
 @asset(group_name="chembl_ftp")
 def chembl_uniprot_mappings_asset() -> DataFrame:
     df = get_chembl_uniprot_mappings()
-    get_dagster_logger().info(f"Length of chembl uniprot mappings: {len(df)}")
     return df
 
 
-""" Format"""
+"""Format"""
 
 
 @multi_asset(

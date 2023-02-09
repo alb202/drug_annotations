@@ -1,8 +1,9 @@
 from yaml import load, SafeLoader
-from pathlib import Path
 from pandas import DataFrame
+from dagster import file_relative_path
 
-config_dict = load(open(Path("src/config/formatting_config.yaml").absolute(), "r"), Loader=SafeLoader)
+with open(file_relative_path(dunderfile=__file__, relative_path="../config/formatting_config.yaml"), "r") as f:
+    config_dict = load(stream=f, Loader=SafeLoader)
 
 
 def rename_column(df: DataFrame, new_column: str, old_column: str = None, column_value: bool = True) -> DataFrame:
@@ -67,7 +68,7 @@ def reformat_edges(
 
     df = (
         df.loc[:, ["from_type", "from_value", "label", "to_type", "to_value", "source", "parameters"]]
-        # .dropna(how="any", subset=["from_type", "from_value", "label", "to_type", "to_value", "source"], axis=0)
+        .dropna(how="any", subset=["from_type", "from_value", "label", "to_type", "to_value", "source"], axis=0)
         .drop_duplicates(["from_type", "from_value", "label", "to_type", "to_value", "source"], keep="first")
         .sort_values(["from_type", "from_value", "label", "to_type", "to_value", "source"])
         .reset_index(drop=True)
@@ -103,7 +104,7 @@ def reformat_nodes(
     df["parameters"] = df.loc[:, parameters].to_dict(orient="records") if len(parameters) else None
     df = (
         df.loc[:, ["node_type", "value", "source", "parameters"]]
-        # .dropna(how="any", subset=["node_type", "value", "source"], axis=0)
+        .dropna(how="any", subset=["node_type", "value", "source"], axis=0)
         .drop_duplicates(["node_type", "value", "source"], keep="first")
         .sort_values(["node_type", "value", "source"])
         .reset_index(drop=True)

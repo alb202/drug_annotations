@@ -1,35 +1,19 @@
-# from models import *
-# from validation import validate_uniprot_accession, validate_chembl_id, null_detection, empty_string_detection
 from src.scripts.chembl.chembl_api import ChemblAPI
-
-# from dagster import get_dagster_logger, op, Int, In, asset
 from src.utils.formatting import reformat_edges, reformat_nodes
-
-# from typing import
-# from typing import
 from pandas import DataFrame, concat
 import swifter
 import numpy as np
 
+
 """ Extract """
-# import pandas as pd
 
 
-# @asset(
-#     # ins={"n_test": In(dagster_type=Int), "n_jobs": In(dagster_type=Int)},
-#     # config_schema={"n_test": int, "n_jobs": int},
-# )
 def get_chembl_mechanisms(n_test: int = 0, n_jobs: int = 2) -> DataFrame:
     api = ChemblAPI(n_jobs=n_jobs)
     df = api.retrieve_data(endpoint="mechanism", max_records=n_test)
-    # get_dagster_logger().info(f"Length of chembl mechanisms: {len(df)}")
     return df
 
 
-# @asset(
-#     # ins={"assay_confidence_min": In(dagster_type=Int), "n_test": In(dagster_type=Int), "n_jobs": In(dagster_type=Int)},
-#     # config_schema={"n_test": int, "n_jobs": int, "assay_confidence_min": int},
-# )
 def get_chembl_assays(assay_confidence_min: int = 8, n_test: int = 0, n_jobs: int = 2) -> DataFrame:
     api = ChemblAPI(n_jobs=n_jobs)
     df = api.retrieve_data(
@@ -37,40 +21,24 @@ def get_chembl_assays(assay_confidence_min: int = 8, n_test: int = 0, n_jobs: in
         confidence_score_gte=assay_confidence_min,
         max_records=n_test,
     )
-    # get_dagster_logger().info(f"Length of chembl assays: {len(df)}")
     return df
 
 
-# @asset(
-#     ins={"pchembl_min": In(dagster_type=Int), "n_test": In(dagster_type=Int), "n_jobs": In(dagster_type=Int)},
-#     config_schema={"n_test": int, "n_jobs": int, "pchembl_min": int},
-# )
 def get_chembl_activities(pchembl_min: int = 4, n_test: int = 0, n_jobs: int = 2) -> DataFrame:
     api = ChemblAPI(n_jobs=n_jobs)
     df = api.retrieve_data(endpoint="activity", pchembl_value_gte=pchembl_min, max_records=n_test)
-    # get_dagster_logger().info(f"Length of chembl activities: {len(df)}")
     return df
 
 
-# @asset(
-#     ins={"n_test": In(dagster_type=Int), "n_jobs": In(dagster_type=Int)},
-#     config_schema={"n_test": int, "n_jobs": int},
-# )
 def get_chembl_targets(n_test: int = 0, n_jobs: int = 2) -> DataFrame:
     api = ChemblAPI(n_jobs=n_jobs)
     df = api.retrieve_data(endpoint="target", max_records=n_test)
-    # get_dagster_logger().info(f"Length of chembl targets: {len(df)}")
     return df
 
 
-# @asset(
-#     ins={"n_test": In(dagster_type=Int), "n_jobs": In(dagster_type=Int)},
-#     config_schema={"n_test": int, "n_jobs": int},
-# )
 def get_chembl_molecules(n_test: int = 0, n_jobs: int = 2) -> DataFrame:
     api = ChemblAPI(n_jobs=n_jobs)
     df = api.retrieve_data(endpoint="molecule", max_records=n_test)
-    # get_dagster_logger().info(f"Length of chembl molecules: {len(df)}")
     return df
 
 
@@ -124,10 +92,6 @@ def transform_chembl_targets(targets: DataFrame) -> DataFrame:
     df["uniprot_relationship"] = df["uniprot_relationship"].swifter.apply(
         lambda s: "is_" + s.lower().replace(" ", "") if isinstance(s, str) else None
     )
-    # uniprot__id_check = [
-    #     validate_uniprot_accession(uniprot_accession) for uniprot_accession in tqdm(targets["uniprot_accession"])
-    # ]
-    # chembl_id_check = [validate_chembl_id(chembl_id) for chembl_id in tqdm(targets["target_chembl_id"])]
 
     return df
 

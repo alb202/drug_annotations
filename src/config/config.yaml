@@ -1,0 +1,23 @@
+ops:
+  chembl_activities_asset:
+    config:
+      n_jobs: 2
+      n_test: 15000
+      pchembl_min: 4
+  chembl_assays_asset:
+    config:
+      assay_confidence_min: 8
+      n_jobs: 2
+      n_test: 15000
+  chembl_mechanisms_asset:
+    config:
+      n_jobs: 2
+      n_test: 15000
+  chembl_molecules_asset:
+    config:
+      n_jobs: 2
+      n_test: 15000
+  chembl_targets_asset:
+    config:
+      n_jobs: 2
+      n_test: 15000
