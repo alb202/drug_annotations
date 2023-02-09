@@ -1,0 +1,23 @@
+formatting:
+  node_types:
+    - group
+    - chembl_compound_id
+    - chembl_target_id
+    - chembl_assay_id
+    - chebi_id
+    - pubchem_id
+    - smiles
+    - inchi
+    - inchi_key
+    - cas_number
+    - protein_identifier
+    - hgnc
+    - ncbi
+    - broad_compound_identifier
+    - broad_sample_identifier
+    - gene_symbol
+    - gene_group
+    - uniprot_accession
+    - gene_ontology
+    - mechanism_of_action
+    
