@@ -31,7 +31,7 @@ def chembl_uniprot_mappings_asset() -> DataFrame:
     group_name="chembl_ftp_output",
     outs={"chembl_structure_edges": AssetOut()},
 )
-def chembl_structure_format_asset(chembl_structures) -> DataFrame:
+def chembl_structure_format_asset(chembl_structures: DataFrame) -> DataFrame:
     edges = chembl_structures_format(chembl_structures=chembl_structures)
     yield AssetMaterialization(
         asset_key=AssetKey(("chembl_structure_edges")),
@@ -45,7 +45,7 @@ def chembl_structure_format_asset(chembl_structures) -> DataFrame:
     group_name="chembl_ftp_output",
     outs={"chembl_uniprot_mapping_edges": AssetOut()},
 )
-def chembl_uniprot_mappings_format_asset(chembl_uniprot_mappings) -> DataFrame:
+def chembl_uniprot_mappings_format_asset(chembl_uniprot_mappings: DataFrame) -> DataFrame:
     edges = chembl_uniprot_mappings_format(chembl_uniprot_mappings=chembl_uniprot_mappings)
     yield AssetMaterialization(
         asset_key=AssetKey(("chembl_uniprot_mapping_edges")),

@@ -33,7 +33,7 @@ def drh_samples_asset() -> DataFrame:
 
 
 @op
-def drh_merged(samples, drugs) -> DataFrame:
+def drh_merged(samples: DataFrame, drugs: DataFrame) -> DataFrame:
     return merge_drh(samples=samples, drugs=drugs)
 
 
@@ -41,22 +41,22 @@ def drh_merged(samples, drugs) -> DataFrame:
 
 
 @op
-def drh_annotations_op(drugs) -> DataFrame:
+def drh_annotations_op(drugs: DataFrame) -> DataFrame:
     return transform_drh_annotations(drugs=drugs)
 
 
 @op
-def drh_structures_op(drugs) -> DataFrame:
+def drh_structures_op(drugs: DataFrame) -> DataFrame:
     return transform_drh_structures(drugs=drugs)
 
 
 @op
-def drh_altids_op(drugs) -> DataFrame:
+def drh_altids_op(drugs: DataFrame) -> DataFrame:
     return transform_drh_altids(drugs=drugs)
 
 
 @op
-def drh_details_op(drugs) -> DataFrame:
+def drh_details_op(drugs: DataFrame) -> DataFrame:
     return transform_drh_details(drugs=drugs)
 
 
@@ -67,7 +67,7 @@ def drh_details_op(drugs) -> DataFrame:
     group_name="drh",
     outs={"drh_annotations_edges": AssetOut()},
 )
-def drh_annotations_format_asset(annotations) -> DataFrame:
+def drh_annotations_format_asset(annotations: DataFrame) -> DataFrame:
     edges = drh_annotations_format(annotations=annotations)
     yield AssetMaterialization(
         asset_key=AssetKey(("drh_annotations_edges")),
@@ -81,7 +81,7 @@ def drh_annotations_format_asset(annotations) -> DataFrame:
     group_name="drh",
     outs={"drh_structures_edges": AssetOut()},
 )
-def drh_structures_format_asset(structures) -> DataFrame:
+def drh_structures_format_asset(structures: DataFrame) -> DataFrame:
     edges = drh_structures_format(structures=structures)
     yield AssetMaterialization(
         asset_key=AssetKey(("drh_structures_edges")),
@@ -95,7 +95,7 @@ def drh_structures_format_asset(structures) -> DataFrame:
     group_name="drh",
     outs={"drh_altids_edges": AssetOut()},
 )
-def drh_altids_format_asset(altids) -> DataFrame:
+def drh_altids_format_asset(altids: DataFrame) -> DataFrame:
     edges = drh_altids_format(altids=altids)
     yield AssetMaterialization(
         asset_key=AssetKey(("drh_altids_edges")),
@@ -109,7 +109,7 @@ def drh_altids_format_asset(altids) -> DataFrame:
     group_name="drh",
     outs={"drh_annotations_nodes": AssetOut()},
 )
-def drh_details_format_asset(details) -> DataFrame:
+def drh_details_format_asset(details: DataFrame) -> DataFrame:
     nodes = drh_details_format(details=details)
     yield AssetMaterialization(
         asset_key=AssetKey(("drh_annotations_nodes")),

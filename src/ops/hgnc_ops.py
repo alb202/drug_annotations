@@ -18,7 +18,7 @@ def get_hgnc_asset() -> DataFrame:
 
 
 @asset(group_name="drh")
-def get_hgnc_additional_asset(context, hgnc) -> DataFrame:
+def get_hgnc_additional_asset(context, hgnc: DataFrame) -> DataFrame:
     return get_hgnc_additional(hgnc, n_jobs=context.op_config["n_jobs"], n_test=context.op_config["n_test"])
 
 
@@ -26,7 +26,7 @@ def get_hgnc_additional_asset(context, hgnc) -> DataFrame:
 
 
 @op
-def hgnc_concat_additional_asset(hgnc_df, hgnc_additional) -> DataFrame:
+def hgnc_concat_additional_asset(hgnc_df: DataFrame, hgnc_additional: DataFrame) -> DataFrame:
     return hgnc_concat_additional(hgnc_df=hgnc_df, hgnc_additional=hgnc_additional)
 
 
@@ -37,7 +37,7 @@ def hgnc_concat_additional_asset(hgnc_df, hgnc_additional) -> DataFrame:
     group_name="hgnc",
     outs={"hgnc_edges": AssetOut(), "hgnc_nodes": AssetOut()},
 )
-def hgnc_format_asset(hgnc) -> DataFrame:
+def hgnc_format_asset(hgnc: DataFrame) -> DataFrame:
     edges, nodes = hgnc_format(hgnc=hgnc)
     yield AssetMaterialization(
         asset_key=AssetKey(("hgnc_edges", "hgnc_nodes")),
