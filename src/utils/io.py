@@ -7,7 +7,7 @@ from yaml import load, SafeLoader
 with open(file_relative_path(dunderfile=__file__, relative_path="../config/io_config.yaml"), "r") as f:
     config_dict = load(stream=f, Loader=SafeLoader)
 
-OUTPUT_PATH = Path(config_dict.get("io").get("paths").get("output"))
+OUTPUT_PATH = Path(config_dict.get("io").get("paths").get("output")).absolute()
 
 
 def create_output_folders() -> None:
@@ -16,9 +16,9 @@ def create_output_folders() -> None:
     edges = OUTPUT_PATH / "edges"
 
     if not edges.exists():
-        edges.mkdir()
+        edges.mkdir(parents=True)
     if not nodes.exists():
-        nodes.mkdir()
+        nodes.mkdir(parents=True)
 
 
 def save_df_asset(df: DataFrame, name: str, folder: str) -> None:
