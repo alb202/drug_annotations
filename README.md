@@ -95,7 +95,7 @@ localhost:8080
 
 The output of the pipeline will appear in the folder mounted during the docker run command
 
-You can also run the dagster pipeline directly from the 'drug_annotations' folder. simpy run:
+You can also run the dagster pipeline directly from the 'drug_annotations' folder. Simpy run:
 ```
 python __main__.py
 ```
