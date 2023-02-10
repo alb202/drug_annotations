@@ -1,4 +1,4 @@
-formatting:
+validation:
   node_types:
     - group
     - chembl_compound_id
@@ -20,4 +20,7 @@ formatting:
     - uniprot_accession
     - gene_ontology
     - mechanism_of_action
-    
+  sources:
+    - hgnc
+    - drug_repurposing_hub
+    - chembl

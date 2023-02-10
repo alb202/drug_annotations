@@ -3,18 +3,38 @@ from src.utils.formatting import reformat_edges, reformat_nodes
 from pandas import DataFrame, concat
 import swifter
 import numpy as np
+from typing import Tuple
 
 
 """ Extract """
 
 
 def get_chembl_mechanisms(n_test: int = 0, n_jobs: int = 2) -> DataFrame:
+    """Get the chemical mechanisms from Chembl.
+
+    Args:
+        n_test (int, optional): Number of records to get. Defaults to 0.
+        n_jobs (int, optional): Number of concurrent jobs to use in the ChEMBL API. Defaults to 2.
+
+    Returns:
+        DataFrame: The chemical mechanisms from Chembl.
+    """
     api = ChemblAPI(n_jobs=n_jobs)
     df = api.retrieve_data(endpoint="mechanism", max_records=n_test)
     return df
 
 
 def get_chembl_assays(assay_confidence_min: int = 8, n_test: int = 0, n_jobs: int = 2) -> DataFrame:
+    """Get the chemical assays from Chembl.
+
+    Args:
+        assay_confidence_min (int, optional): A minimum confidence level from the assay table. Defaults to 8.
+        n_test (int, optional): Number of records to get. Defaults to 0.
+        n_jobs (int, optional): Number of concurrent jobs to use in the ChEMBL API. Defaults to 2.
+
+    Returns:
+        DataFrame: The chemical assays from Chembl.
+    """
     api = ChemblAPI(n_jobs=n_jobs)
     df = api.retrieve_data(
         endpoint="assay",
@@ -25,18 +45,46 @@ def get_chembl_assays(assay_confidence_min: int = 8, n_test: int = 0, n_jobs: in
 
 
 def get_chembl_activities(pchembl_min: int = 4, n_test: int = 0, n_jobs: int = 2) -> DataFrame:
+    """Get the chemical activities from Chembl.
+
+    Args:
+        pchembl_min (int, optional): A minimum pChembl value from the activity table. Defaults to 4.
+        n_test (int, optional): Number of records to get. Defaults to 0.
+        n_jobs (int, optional): Number of concurrent jobs to use in the ChEMBL API. Defaults to 2.
+
+    Returns:
+        DataFrame: The chemical activities from Chembl.
+    """
     api = ChemblAPI(n_jobs=n_jobs)
     df = api.retrieve_data(endpoint="activity", pchembl_value_gte=pchembl_min, max_records=n_test)
     return df
 
 
 def get_chembl_targets(n_test: int = 0, n_jobs: int = 2) -> DataFrame:
+    """Get the chemical targets from Chembl.
+
+    Args:
+        n_test (int, optional): Number of records to get. Defaults to 0.
+        n_jobs (int, optional): Number of concurrent jobs to use in the ChEMBL API. Defaults to 2.
+
+    Returns:
+        DataFrame: The chemical targets from Chembl.
+    """
     api = ChemblAPI(n_jobs=n_jobs)
     df = api.retrieve_data(endpoint="target", max_records=n_test)
     return df
 
 
 def get_chembl_molecules(n_test: int = 0, n_jobs: int = 2) -> DataFrame:
+    """Get the chemical molecules from Chembl.
+
+    Args:
+        n_test (int, optional): Number of records to get. Defaults to 0.
+        n_jobs (int, optional): Number of concurrent jobs to use in the ChEMBL API. Defaults to 2.
+
+    Returns:
+        DataFrame: The chemical molecules from Chembl.
+    """
     api = ChemblAPI(n_jobs=n_jobs)
     df = api.retrieve_data(endpoint="molecule", max_records=n_test)
     return df
@@ -46,6 +94,8 @@ def get_chembl_molecules(n_test: int = 0, n_jobs: int = 2) -> DataFrame:
 
 
 def transform_chembl_activities(activities: DataFrame, assays: DataFrame) -> DataFrame:
+    """Transform the chemical activities from Chembl."""
+
     assays = assays.loc[
         :, ["assay_chembl_id", "confidence_description", "confidence_score", "description", "document_chembl_id"]
     ].drop_duplicates()
@@ -58,7 +108,8 @@ def transform_chembl_activities(activities: DataFrame, assays: DataFrame) -> Dat
 
 
 def transform_chembl_targets(targets: DataFrame) -> DataFrame:
-    """Targets to uniprot and gene names"""
+    """Transform the chemical targets from Chembl."""
+
     df = targets.explode("target_components").reset_index(drop=True)
     df["uniprot_accession"] = df["target_components"].swifter.apply(
         lambda s: s.get("accession") if isinstance(s, dict) else None
@@ -97,6 +148,8 @@ def transform_chembl_targets(targets: DataFrame) -> DataFrame:
 
 
 def transform_chembl_molecules(molecules: DataFrame) -> DataFrame:
+    """Transform the chemical molecules from Chembl."""
+
     molecules["parent_chembl_id"] = molecules["molecule_hierarchy"].swifter.apply(
         lambda x: x.get("molecule_chembl_id") if isinstance(x, dict) else None
     )
@@ -123,6 +176,8 @@ def transform_chembl_molecules(molecules: DataFrame) -> DataFrame:
 
 
 def transform_chembl_mechanisms(mechanisms: DataFrame) -> DataFrame:
+    """Transform the chemical mechanisms from Chembl."""
+
     df = mechanisms.loc[
         :,
         [
@@ -141,7 +196,9 @@ def transform_chembl_mechanisms(mechanisms: DataFrame) -> DataFrame:
 """ Formatting nodes and edges"""
 
 
-def chembl_targets_format(targets: DataFrame):
+def chembl_targets_format(targets: DataFrame) -> Tuple[DataFrame, DataFrame]:
+    """Format the chemical targets data into edge and node datasets."""
+
     edge_1 = reformat_edges(
         df=targets,
         from_value="target_chembl_id",
@@ -175,6 +232,8 @@ def chembl_targets_format(targets: DataFrame):
 
 
 def chembl_mechanisms_format(mechanisms: DataFrame):
+    """Format the chemical mechanisms data into edge datasets."""
+
     edge_1 = reformat_edges(
         df=mechanisms,
         from_type_val="chembl_compound_id",
@@ -200,6 +259,8 @@ def chembl_mechanisms_format(mechanisms: DataFrame):
 
 
 def chembl_activities_format(activities: DataFrame):
+    """Format the chemical activities data into edge datasets."""
+
     edge_1 = reformat_edges(
         df=activities,
         from_type_val="chembl_compound_id",
@@ -215,6 +276,8 @@ def chembl_activities_format(activities: DataFrame):
 
 
 def chembl_molecules_format(molecules: DataFrame):
+    """Format the molecule data into node datasets."""
+
     node_1 = reformat_nodes(
         df=molecules,
         node_type_val="chembl_compound_id",

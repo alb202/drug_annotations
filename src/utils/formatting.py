@@ -8,6 +8,7 @@ with open(file_relative_path(dunderfile=__file__, relative_path="../config/forma
 
 def rename_column(df: DataFrame, new_column: str, old_column: str = None, column_value: bool = True) -> DataFrame:
     """Renames columns during during formatting of edge and node dataframes"""
+
     if not isinstance(new_column, str):
         raise ValueError("A column name must be provided as a string")
     elif not isinstance(old_column, str) and not isinstance(column_value, str):
@@ -42,6 +43,7 @@ def reformat_edges(
     source_val: str = None,
 ) -> DataFrame:
     """Reformat edge dataframes and parameters"""
+
     parameters = [] if not parameters else parameters
     df = rename_column(df=df, new_column="from_type", old_column=from_type, column_value=from_type_val)
     df = rename_column(df=df, new_column="from_value", old_column=from_value, column_value=from_value_val)
@@ -53,16 +55,22 @@ def reformat_edges(
     invalid_from_types = [
         from_type
         for from_type in df["from_type"].unique()
-        if from_type not in config_dict.get("formatting").get("node_types")
+        if from_type not in config_dict.get("validation").get("node_types")
     ]
     if invalid_from_types:
         raise (f'From types {".".join(invalid_from_types)} are not valid')
 
     invalid_to_types = [
-        to_type for to_type in df["to_type"].unique() if to_type not in config_dict.get("formatting").get("node_types")
+        to_type for to_type in df["to_type"].unique() if to_type not in config_dict.get("validation").get("node_types")
     ]
     if invalid_to_types:
         raise (f'To types {".".join(invalid_to_types)} are not valid')
+
+    invalid_sources = [
+        source for source in df["source"].unique() if source not in config_dict.get("validation").get("sources")
+    ]
+    if invalid_sources:
+        raise (f'Sources {".".join(invalid_sources)} are not valid')
 
     df["parameters"] = df.loc[:, parameters].to_dict(orient="records") if len(parameters) else None
 
@@ -86,8 +94,8 @@ def reformat_nodes(
     source_val: str = None,
     value_val: str = None,
 ) -> DataFrame:
-
     """Reformat dataframe to a list of nodes and parameters"""
+
     parameters = [] if not parameters else parameters
 
     df = rename_column(df=df, new_column="node_type", old_column=node_type, column_value=node_type_val)
@@ -97,10 +105,17 @@ def reformat_nodes(
     invalid_node_types = [
         node_type
         for node_type in df["node_type"].unique()
-        if node_type not in config_dict.get("formatting").get("node_types")
+        if node_type not in config_dict.get("validation").get("node_types")
     ]
     if invalid_node_types:
         raise (f'Node types {".".join (invalid_node_types)} are not valid')
+
+    invalid_sources = [
+        source for source in df["source"].unique() if source not in config_dict.get("validation").get("sources")
+    ]
+    if invalid_sources:
+        raise (f'Sources {".".join(invalid_sources)} are not valid')
+
     df["parameters"] = df.loc[:, parameters].to_dict(orient="records") if len(parameters) else None
     df = (
         df.loc[:, ["node_type", "value", "source", "parameters"]]

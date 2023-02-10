@@ -98,8 +98,8 @@ def chembl_targets_format_asset(targets) -> DataFrame:
         asset_key=AssetKey(("chembl_target_edges", "chembl_target_nodes")),
         metadata={"text_metadata": "Created edges and nodes from chembl targets"},
     )
-    save_df_asset(df=edges, name="checmbl_target_edges")
-    save_df_asset(df=nodes, name="checmbl_target_nodes")
+    save_df_asset(df=edges, name="chembl_target_edges", folder="edges")
+    save_df_asset(df=nodes, name="chembl_target_nodes", folder="nodes")
 
     yield Output(value=edges, output_name="chembl_target_edges")
     yield Output(value=nodes, output_name="chembl_target_nodes")
@@ -118,8 +118,8 @@ def chembl_mechanisms_format_asset(mechanisms) -> DataFrame:
         asset_key=AssetKey(("chembl_mechanisms_edges", "chembl_mechanisms_nodes")),
         metadata={"text_metadata": "Created edges and nodes from chembl mechanisms"},
     )
-    save_df_asset(df=edges, name="checmbl_mechanism_edges")
-    save_df_asset(df=nodes, name="checmbl_mechanism_nodes")
+    save_df_asset(df=edges, name="chembl_mechanism_edges", folder="edges")
+    save_df_asset(df=nodes, name="chembl_mechanism_nodes", folder="nodes")
 
     yield Output(value=edges, output_name="chembl_mechanisms_edges")
     yield Output(value=nodes, output_name="chembl_mechanisms_nodes")
@@ -139,8 +139,8 @@ def chembl_activities_format_asset(activities) -> DataFrame:
         metadata={"text_metadata": "Created edges and nodes from chembl activities"},
     )
 
-    save_df_asset(df=edges, name="checmbl_activity_edges")
-    save_df_asset(df=nodes, name="checmbl_activity_nodes")
+    save_df_asset(df=edges, name="chembl_activity_edges", folder="edges")
+    save_df_asset(df=nodes, name="chembl_activity_nodes", folder="nodes")
 
     yield Output(value=edges, output_name="chembl_activities_edges")
     yield Output(value=nodes, output_name="chembl_activities_nodes")
@@ -159,8 +159,8 @@ def chembl_molecules_format_asset(molecules) -> DataFrame:
         asset_key=AssetKey(("chembl_molecules_edges", "chembl_molecules_nodes")),
         metadata={"text_metadata": "Created edges and nodes from chembl molecules"},
     )
-    save_df_asset(df=edges, name="checmbl_molecule_edges")
-    save_df_asset(df=nodes, name="checmbl_molecule_nodes")
+    save_df_asset(df=edges, name="chembl_molecule_edges", folder="edges")
+    save_df_asset(df=nodes, name="chembl_molecule_nodes", folder="nodes")
 
     yield Output(value=edges, output_name="chembl_molecules_edges")
     yield Output(value=nodes, output_name="chembl_molecules_nodes")

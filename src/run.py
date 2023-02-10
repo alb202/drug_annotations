@@ -33,12 +33,17 @@ from src.ops.drh_ops import (
     drh_altids_format_asset,
     drh_details_format_asset,
 )
+from src.ops.hgnc_ops import get_hgnc_asset, get_hgnc_additional_asset, hgnc_concat_additional_asset, hgnc_format_asset
+from src.utils.io import create_output_folders
 
-default_config = config_from_files([file_relative_path(dunderfile=__file__, relative_path="config/config.yaml")])
+default_config = config_from_files([file_relative_path(dunderfile=__file__, relative_path="config/run_config.yaml")])
+
+create_output_folders()
 
 
 @job(config=default_config)
 def main() -> None:
+    """The pipeline job starts here"""
 
     """Chembl API annotation data extraction"""
     transformed_activity = chembl_activities_transform_asset(
@@ -64,3 +69,9 @@ def main() -> None:
     drh_structures_format_asset(structures=drh_structures_op(drugs=drh_merged_data))
     drh_altids_format_asset(altids=drh_altids_op(drugs=drh_merged_data))
     drh_details_format_asset(details=drh_details_op(drugs=drh_merged_data))
+
+    """HGNC annotation data extraction"""
+    hgnc_data = get_hgnc_asset()
+    hgnc_format_asset(
+        hgnc=hgnc_concat_additional_asset(hgnc_df=hgnc_data, hgnc_additional=get_hgnc_additional_asset(hgnc=hgnc_data))
+    )

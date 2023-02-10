@@ -5,6 +5,14 @@ import swifter
 
 
 def get_chembl_structures() -> DataFrame:
+    """Get the molecular structures from the chembl FTP.
+
+
+    Returns:
+        DataFrame: A dataframe containing the molecular structures.
+
+    """
+
     url = "https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_31/chembl_31_chemreps.txt.gz"
 
     df = (
@@ -16,6 +24,12 @@ def get_chembl_structures() -> DataFrame:
 
 
 def get_chembl_uniprot_mappings() -> DataFrame:
+    """Get the uniprot mappings from the chembl FTP.
+
+    Returns:
+        DataFrame: A dataframe containing the uniprot mappings.
+
+    """
     url = "https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_31/chembl_uniprot_mapping.txt"
 
     df = read_csv(
@@ -30,7 +44,16 @@ def get_chembl_uniprot_mappings() -> DataFrame:
     return df
 
 
-def chembl_structures_format(chembl_structures: DataFrame):
+def chembl_structures_format(chembl_structures: DataFrame) -> DataFrame:
+    """Format the molecular structures datasets.
+
+    Args:
+        chembl_structures (DataFrame): The molecular structure dataframe
+
+    Returns:
+        DataFrame: Molecular structure edges dataframe.
+
+    """
     edge_1 = reformat_edges(
         df=chembl_structures,
         from_type_val="smiles",
@@ -55,7 +78,16 @@ def chembl_structures_format(chembl_structures: DataFrame):
     return concat([edge_1, edge_2]).reset_index(drop=True)
 
 
-def chembl_uniprot_mappings_format(chembl_uniprot_mappings: DataFrame):
+def chembl_uniprot_mappings_format(chembl_uniprot_mappings: DataFrame) -> DataFrame:
+    """Format the uniprot mappings datasets.
+
+    Args:
+        chembl_uniprot_mappings (DataFrame): The uniprot mapping dataframe
+
+    Returns:
+        DataFrame: Molecular structure edges dataframe.
+
+    """
     edge_1 = reformat_edges(
         df=chembl_uniprot_mappings,
         from_type_val="chembl_target_id",

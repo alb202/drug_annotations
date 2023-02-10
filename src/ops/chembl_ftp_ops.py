@@ -37,7 +37,7 @@ def chembl_structure_format_asset(chembl_structures) -> DataFrame:
         asset_key=AssetKey(("chembl_structure_edges")),
         metadata={"text_metadata": "Created edges from chembl structures"},
     )
-    save_df_asset(df=edges, name="chembl_structure_edges")
+    save_df_asset(df=edges, name="chembl_structure_edges", folder="edges")
     yield Output(value=edges, output_name="chembl_structure_edges")
 
 
@@ -51,5 +51,5 @@ def chembl_uniprot_mappings_format_asset(chembl_uniprot_mappings) -> DataFrame:
         asset_key=AssetKey(("chembl_uniprot_mapping_edges")),
         metadata={"text_metadata": "Created edges from chembl uniprot mappings"},
     )
-    save_df_asset(df=edges, name="chembl_uniprot_mapping_edges")
+    save_df_asset(df=edges, name="chembl_uniprot_mapping_edges", folder="edges")
     yield Output(value=edges, output_name="chembl_uniprot_mapping_edges")

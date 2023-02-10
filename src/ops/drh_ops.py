@@ -73,7 +73,7 @@ def drh_annotations_format_asset(annotations) -> DataFrame:
         asset_key=AssetKey(("drh_annotations_edges")),
         metadata={"text_metadata": "Created edges from drh annotations"},
     )
-    save_df_asset(df=edges, name="drh_annotations_edges")
+    save_df_asset(df=edges, name="drh_annotations_edges", folder="edges")
     yield Output(value=edges, output_name="drh_annotations_edges")
 
 
@@ -87,7 +87,7 @@ def drh_structures_format_asset(structures) -> DataFrame:
         asset_key=AssetKey(("drh_structures_edges")),
         metadata={"text_metadata": "Created edges from drh structures"},
     )
-    save_df_asset(df=edges, name="drh_structures_edges")
+    save_df_asset(df=edges, name="drh_structures_edges", folder="edges")
     yield Output(value=edges, output_name="drh_structures_edges")
 
 
@@ -101,7 +101,7 @@ def drh_altids_format_asset(altids) -> DataFrame:
         asset_key=AssetKey(("drh_altids_edges")),
         metadata={"text_metadata": "Created edges from drh altids"},
     )
-    save_df_asset(df=edges, name="drh_altids_edges")
+    save_df_asset(df=edges, name="drh_altids_edges", folder="edges")
     yield Output(value=edges, output_name="drh_altids_edges")
 
 
@@ -115,5 +115,5 @@ def drh_details_format_asset(details) -> DataFrame:
         asset_key=AssetKey(("drh_annotations_nodes")),
         metadata={"text_metadata": "Created nodes from drh annotations"},
     )
-    save_df_asset(df=nodes, name="drh_annotations_nodes")
+    save_df_asset(df=nodes, name="drh_annotations_nodes", folder="nodes")
     yield Output(value=nodes, output_name="drh_annotations_nodes")

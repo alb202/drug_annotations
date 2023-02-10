@@ -9,6 +9,12 @@ from pandas import isna
 
 
 def get_drh_drugs() -> DataFrame:
+    """Get the drug repurposing hub drug datasets
+
+    Returns:
+        DataFrame: Drug repurposing hub drug dataset
+
+    """
     url = "https://s3.amazonaws.com/data.clue.io/repurposing/downloads/repurposing_drugs_20200324.txt"
     df = read_csv(url, sep="\t", header=0, index_col=False, comment="!")
     df["moa"] = df["moa"].replace(
@@ -19,6 +25,12 @@ def get_drh_drugs() -> DataFrame:
 
 
 def get_drh_samples() -> DataFrame:
+    """Get the drug repurposing hub sample datasets
+
+    Returns:
+        DataFrame: Drug repurposing hub sample dataset
+
+    """
     url = "https://s3.amazonaws.com/data.clue.io/repurposing/downloads/repurposing_samples_20200324.txt"
     df = read_csv(url, sep="\t", header=0, index_col=False, comment="!")
     df["broad_compound_id"] = df["broad_id"].apply(lambda broad_id: broad_id[:13])
@@ -29,6 +41,7 @@ def get_drh_samples() -> DataFrame:
 
 
 def merge_drh(samples: DataFrame, drugs: DataFrame) -> DataFrame:
+    """Merge the drug repurposing hub drug and sample datasets"""
     return samples.merge(drugs, how="inner", on="pert_iname")
 
 
@@ -36,6 +49,8 @@ def merge_drh(samples: DataFrame, drugs: DataFrame) -> DataFrame:
 
 
 def transform_drh_annotations(drugs: DataFrame) -> DataFrame:
+    """Extract the drug repurposing hub functional annotations"""
+
     df = drugs.loc[:, ["broad_compound_id", "moa", "target"]].drop_duplicates(subset=["broad_compound_id"])
     df["moa"] = df["moa"].swifter.apply(
         lambda moa: [(i, value) for i, value in enumerate(moa.split("|"))] if isinstance(moa, str) else moa
@@ -48,6 +63,8 @@ def transform_drh_annotations(drugs: DataFrame) -> DataFrame:
 
 
 def transform_drh_structures(drugs: DataFrame) -> DataFrame:
+    """Extract the drug repurposing hub structures"""
+
     df = (
         drugs.loc[:, ["broad_compound_id", "smiles", "InChIKey"]]
         .drop_duplicates()
@@ -61,6 +78,8 @@ def transform_drh_structures(drugs: DataFrame) -> DataFrame:
 
 
 def transform_drh_altids(drugs: DataFrame) -> DataFrame:
+    """Extract the drug repurposing hub broad alternative identifiers"""
+
     df = drugs.loc[:, ["broad_compound_id", "deprecated_broad_id", "pubchem_cid"]].dropna(
         subset=["deprecated_broad_id", "pubchem_cid"], how="all", axis=0
     )
@@ -73,6 +92,8 @@ def transform_drh_altids(drugs: DataFrame) -> DataFrame:
 
 
 def transform_drh_details(drugs: DataFrame) -> DataFrame:
+    """Extract the drug repurposing hub additional details"""
+
     df = (
         drugs.loc[
             :,
@@ -102,7 +123,15 @@ def transform_drh_details(drugs: DataFrame) -> DataFrame:
 """ Formatting nodes and edges"""
 
 
-def drh_annotations_format(annotations: DataFrame):
+def drh_annotations_format(annotations: DataFrame) -> DataFrame:
+    """Format the drug repurposing hub annotations.
+
+    Args:
+        annotations (DataFrame): The drug repurposing hub annotations.
+
+    Returns:
+        DataFrame: DRH annotation edges dataframe.
+    """
     edge_1 = reformat_edges(
         df=annotations,
         from_type_val="broad_compound_identifier",
@@ -110,7 +139,7 @@ def drh_annotations_format(annotations: DataFrame):
         to_type_val="mechanism_of_action",
         to_value="moa",
         label_val="has_mechanism_of_action",
-        source_val="drug_reporposing_hub",
+        source_val="drug_repurposing_hub",
         parameters=["primary_moa"],
     )
 
@@ -121,13 +150,21 @@ def drh_annotations_format(annotations: DataFrame):
         to_type_val="gene_symbol",
         to_value="target",
         label_val="has_protein_target",
-        source_val="drug_reporposing_hub",
+        source_val="drug_repurposing_hub",
         parameters=None,
     )
     return concat([edge_1, edge_2]).reset_index(drop=True)
 
 
-def drh_structures_format(structures: DataFrame):
+def drh_structures_format(structures: DataFrame) -> DataFrame:
+    """Format the drug repurposing hub structures.
+
+    Args:
+        structures (DataFrame): The drug repurposing hub structures.
+
+    Returns:
+        DataFrame: DRH structure edges dataframe.
+    """
     edge_1 = reformat_edges(
         df=structures,
         from_type_val="smiles",
@@ -135,7 +172,7 @@ def drh_structures_format(structures: DataFrame):
         to_type_val="broad_compound_identifier",
         to_value="broad_compound_id",
         label_val="has_structure",
-        source_val="drug_reporposing_hub",
+        source_val="drug_repurposing_hub",
         parameters=["raw_smiles"],
     )
 
@@ -146,13 +183,21 @@ def drh_structures_format(structures: DataFrame):
         to_type_val="broad_compound_identifier",
         to_value="broad_compound_id",
         label_val="has_inchi_key",
-        source_val="drug_reporposing_hub",
+        source_val="drug_repurposing_hub",
         parameters=None,
     )
     return concat([edge_1, edge_2]).reset_index(drop=True)
 
 
-def drh_altids_format(altids: DataFrame):
+def drh_altids_format(altids: DataFrame) -> DataFrame:
+    """Format the drug repurposing hub alternative identifiers
+
+    Args:
+        altids (DataFrame): The drug repurposing hub alternative identifiers.
+
+    Returns:
+        DataFrame: DRH alternative identifiers edges dataframe.
+    """
     edge_1 = reformat_edges(
         df=altids,
         from_type_val="broad_sample_identifier",
@@ -160,7 +205,7 @@ def drh_altids_format(altids: DataFrame):
         to_type_val="broad_compound_identifier",
         to_value="broad_compound_id",
         label_val="has_alternative_id",
-        source_val="drug_reporposing_hub",
+        source_val="drug_repurposing_hub",
         parameters=None,
     )
 
@@ -171,18 +216,26 @@ def drh_altids_format(altids: DataFrame):
         to_type_val="pubchem_id",
         to_value="pubchem_cid",
         label_val="has_equivilant_id",
-        source_val="drug_reporposing_hub",
+        source_val="drug_repurposing_hub",
         parameters=None,
     )
     return concat([edge_1, edge_2]).reset_index(drop=True)
 
 
-def drh_details_format(details: DataFrame):
+def drh_details_format(details: DataFrame) -> DataFrame:
+    """Format the drug repurposing hub compound details
+
+    Args:
+        details (DataFrame): The drug repurposing hub compound details.
+
+    Returns:
+        DataFrame: DRH compound details edges dataframe.
+    """
     node_1 = reformat_nodes(
         df=details,
         node_type_val="broad_compound_identifier",
         value="broad_compound_id",
-        source_val="drug_reporposing_hub",
+        source_val="drug_repurposing_hub",
         parameters=["clinical_phase", "pert_iname", "vendor", "vendor_name", "disease_area", "indication"],
     )
     return concat([node_1]).reset_index(drop=True)
