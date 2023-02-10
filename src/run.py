@@ -38,12 +38,25 @@ from src.utils.io import create_output_folders
 
 default_config = config_from_files([file_relative_path(dunderfile=__file__, relative_path="config/run_config.yaml")])
 
-create_output_folders()
-
 
 @job(config=default_config)
 def main() -> None:
-    """The pipeline job starts here"""
+
+    create_output_folders()
+
+    """HGNC annotation data extraction"""
+    hgnc_data = get_hgnc_asset()
+    hgnc_format_asset(
+        hgnc=hgnc_concat_additional_asset(hgnc_df=hgnc_data, hgnc_additional=get_hgnc_additional_asset(hgnc=hgnc_data))
+    )
+
+    """DRH annotation data extraction"""
+    drh_merged_data = drh_merged(drugs=drh_drugs_asset(), samples=drh_samples_asset())
+
+    drh_annotations_format_asset(annotations=drh_annotations_op(drugs=drh_merged_data))
+    drh_structures_format_asset(structures=drh_structures_op(drugs=drh_merged_data))
+    drh_altids_format_asset(altids=drh_altids_op(drugs=drh_merged_data))
+    drh_details_format_asset(details=drh_details_op(drugs=drh_merged_data))
 
     """Chembl API annotation data extraction"""
     transformed_activity = chembl_activities_transform_asset(
@@ -61,17 +74,3 @@ def main() -> None:
 
     chembl_structure_format_asset(chembl_structures=chembl_structures_asset()),
     chembl_uniprot_mappings_format_asset(chembl_uniprot_mappings=chembl_uniprot_mappings_asset())
-
-    """DRH annotation data extraction"""
-    drh_merged_data = drh_merged(drugs=drh_drugs_asset(), samples=drh_samples_asset())
-
-    drh_annotations_format_asset(annotations=drh_annotations_op(drugs=drh_merged_data))
-    drh_structures_format_asset(structures=drh_structures_op(drugs=drh_merged_data))
-    drh_altids_format_asset(altids=drh_altids_op(drugs=drh_merged_data))
-    drh_details_format_asset(details=drh_details_op(drugs=drh_merged_data))
-
-    """HGNC annotation data extraction"""
-    hgnc_data = get_hgnc_asset()
-    hgnc_format_asset(
-        hgnc=hgnc_concat_additional_asset(hgnc_df=hgnc_data, hgnc_additional=get_hgnc_additional_asset(hgnc=hgnc_data))
-    )
