@@ -2,7 +2,10 @@
 FROM python:3.10.8-slim
 
 # Install the python dependencies
-RUN pip install pandas dagit dagster joblib tqdm swifter pyarrow
+RUN pip install pandas dagit dagster joblib tqdm swifter pyarrow 
+
+# Install dependencies for PostgreSQL database 
+RUN pip install psycopg2-binary SQLAlchemy
 
 # Create the app directory in the container
 RUN mkdir -p /opt/dagster/app

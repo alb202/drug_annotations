@@ -1,0 +1,33 @@
+version: '3.3'
+services:
+    drug_annotations:
+        container_name: drug-annotations
+        ports:
+            - '3000:3000'
+        volumes:
+            - ./data:/opt/dagster/app/data
+        image: drug_annotations
+    db:
+      image: postgres:latest
+      restart: always
+      environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+        - POSTGRES_DB=drug_db
+        - PGDATA=/var/lib/postgresql/data/pgdata
+      ports:
+        - '5432:5432'
+      volumes:
+        - ./db/drug_db.sql:/docker-entrypoint-initdb.d/create_tables.sql
+        - ./data:/var/lib/postgresql/data
+    pgadmin:
+      image: dpage/pgadmin4
+      container_name: pgadmin4_container
+      restart: always
+      ports:
+        - "8080:80"
+      environment:
+        PGADMIN_DEFAULT_EMAIL: admin@admin.com
+        PGADMIN_DEFAULT_PASSWORD: admin
+      volumes:
+        - ./db/servers.json:/pgadmin4/servers.json

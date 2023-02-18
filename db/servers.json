@@ -1,0 +1,14 @@
+{
+    "Servers": {
+      "1": {
+        "Name": "drug_db",
+        "Group": "Servers",
+        "Host": "db",
+        "Port": 5432,
+        "MaintenanceDB": "postgres",
+        "Username": "postgres",
+        "PassFile": "db:5432:drug_db:postgres:postgres",
+        "SSLMode": "prefer"
+      }
+    }
+  }
