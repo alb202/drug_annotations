@@ -6,12 +6,14 @@ import swifter
 import numpy as np
 
 
-def get_hgnc() -> DataFrame:
+def get_hgnc(n_test: int = -1) -> DataFrame:
     """Get the full table of HGNC genes.
 
     Returns:
         DataFrame: Primary table of HGNC genes.
     """
+    n_test = n_test if n_test > 0 else None
+
     query_columns = [
         "gd_hgnc_id",
         "gd_app_sym",
@@ -43,7 +45,7 @@ def get_hgnc() -> DataFrame:
     url_columns = "&".join(["col=" + column for column in query_columns])
     hgnc_url = f"https://www.genenames.org/cgi-bin/download/custom?status=Approved&hgnc_dbtag=on&order_by=gd_hgnc_id&format=text&submit=submit&{url_columns}"
 
-    df = read_csv(hgnc_url, sep="\t", header=0).rename(columns=rename_columns)
+    df = read_csv(hgnc_url, sep="\t", header=0, nrows=n_test).rename(columns=rename_columns)
 
     df["ncbi_gene_id"] = df["ncbi_gene_id"].swifter.apply(lambda x: str(int(x)) if not isna(x) else None)
     df["gene_group_name"] = (

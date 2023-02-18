@@ -9,7 +9,7 @@ from typing import Tuple
 """ Extract """
 
 
-def get_chembl_mechanisms(n_test: int = 0, n_jobs: int = 2) -> DataFrame:
+def get_chembl_mechanisms(n_test: int = -1, n_jobs: int = 2) -> DataFrame:
     """Get the chemical mechanisms from Chembl.
 
     Args:
@@ -19,12 +19,15 @@ def get_chembl_mechanisms(n_test: int = 0, n_jobs: int = 2) -> DataFrame:
     Returns:
         DataFrame: The chemical mechanisms from Chembl.
     """
+
+    n_test = n_test if n_test > 0 else None
+
     api = ChemblAPI(n_jobs=n_jobs)
     df = api.retrieve_data(endpoint="mechanism", max_records=n_test)
     return df
 
 
-def get_chembl_assays(assay_confidence_min: int = 8, n_test: int = 0, n_jobs: int = 2) -> DataFrame:
+def get_chembl_assays(assay_confidence_min: int = 8, n_test: int = -1, n_jobs: int = 2) -> DataFrame:
     """Get the chemical assays from Chembl.
 
     Args:
@@ -35,6 +38,8 @@ def get_chembl_assays(assay_confidence_min: int = 8, n_test: int = 0, n_jobs: in
     Returns:
         DataFrame: The chemical assays from Chembl.
     """
+    n_test = n_test if n_test > 0 else None
+
     api = ChemblAPI(n_jobs=n_jobs)
     df = api.retrieve_data(
         endpoint="assay",

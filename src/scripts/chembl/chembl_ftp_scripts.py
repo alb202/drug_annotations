@@ -4,7 +4,7 @@ import numpy as np
 import swifter
 
 
-def get_chembl_structures(n_test: int = None) -> DataFrame:
+def get_chembl_structures(n_test: int = -1) -> DataFrame:
     """Get the molecular structures from the chembl FTP.
 
 
@@ -12,6 +12,7 @@ def get_chembl_structures(n_test: int = None) -> DataFrame:
         DataFrame: A dataframe containing the molecular structures.
 
     """
+    n_test = n_test if n_test > 0 else None
 
     url = "https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_31/chembl_31_chemreps.txt.gz"
 
@@ -23,13 +24,15 @@ def get_chembl_structures(n_test: int = None) -> DataFrame:
     return df
 
 
-def get_chembl_uniprot_mappings(n_test: int = None) -> DataFrame:
+def get_chembl_uniprot_mappings(n_test: int = -1) -> DataFrame:
     """Get the uniprot mappings from the chembl FTP.
 
     Returns:
         DataFrame: A dataframe containing the uniprot mappings.
 
     """
+    n_test = n_test if n_test > 0 else None
+
     url = "https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_31/chembl_uniprot_mapping.txt"
 
     df = read_csv(

@@ -8,14 +8,17 @@ from pandas import isna
 """ Extract """
 
 
-def get_drh_drugs(n_test: int = None) -> DataFrame:
+def get_drh_drugs(n_test: int = -1) -> DataFrame:
     """Get the drug repurposing hub drug datasets
 
     Returns:
         DataFrame: Drug repurposing hub drug dataset
 
     """
+    n_test = n_test if n_test > 0 else None
+
     url = "https://s3.amazonaws.com/data.clue.io/repurposing/downloads/repurposing_drugs_20200324.txt"
+
     df = read_csv(url, sep="\t", header=0, index_col=False, comment="!", nrows=n_test)
     df["moa"] = df["moa"].replace(
         "nuclear factor erythroid derived | like (NRF2) activator",
@@ -24,14 +27,17 @@ def get_drh_drugs(n_test: int = None) -> DataFrame:
     return df
 
 
-def get_drh_samples(n_test: int = None) -> DataFrame:
+def get_drh_samples(n_test: int = -1) -> DataFrame:
     """Get the drug repurposing hub sample datasets
 
     Returns:
         DataFrame: Drug repurposing hub sample dataset
 
     """
+    n_test = n_test if n_test > 0 else None
+
     url = "https://s3.amazonaws.com/data.clue.io/repurposing/downloads/repurposing_samples_20200324.txt"
+
     df = read_csv(url, sep="\t", header=0, index_col=False, comment="!", nrows=n_test)
     df["broad_compound_id"] = df["broad_id"].apply(lambda broad_id: broad_id[:13])
     return df
