@@ -1,0 +1,13 @@
+io:
+  paths:
+    pickle_output: /opt/dagster/app/data/
+  destinations:
+    pickle: true
+    postgresql: true
+  postgresql:
+    host: db
+    port: 5432
+    user: postgres
+    password: postgres
+    database: drug_db
+    schema: public
