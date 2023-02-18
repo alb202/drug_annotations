@@ -13,8 +13,8 @@ from pandas import DataFrame
 
 
 @op
-def get_hgnc_op() -> DataFrame:
-    return get_hgnc()
+def get_hgnc_op(context) -> DataFrame:
+    return get_hgnc(n_test=context.op_config["n_test"])
 
 
 @op

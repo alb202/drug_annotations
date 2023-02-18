@@ -2,38 +2,41 @@ ops:
   get_chembl_activities_op:
     config:
       n_jobs: 4
-      n_test: 100
+      n_test: 500
       pchembl_min: 4
   get_chembl_assays_op:
     config:
       assay_confidence_min: 8
       n_jobs: 4
-      n_test: 100
+      n_test: 500
   get_chembl_mechanisms_op:
     config:
       n_jobs: 4
-      n_test: 100
+      n_test: 500
   get_chembl_molecules_op:
     config:
       n_jobs: 4
-      n_test: 100
+      n_test: 500
   get_chembl_targets_op:
     config:
       n_jobs: 4
-      n_test: 100
+      n_test: 500
+  get_hgnc_op:
+    config:
+      n_test: 500
   get_hgnc_additional_op:
     config:
       n_jobs: 4
-      n_test: 100
+      n_test: 500
   get_chembl_structures_op:
     config:
-      n_test: 100
+      n_test: 500
   get_chembl_uniprot_mappings_op:
     config:
-      n_test: 100
+      n_test: 500
   get_drh_drugs_op:
     config:
-      n_test: 100
+      n_test: 500
   get_drh_samples_op:
     config:
-      n_test: 100
+      n_test: 500
