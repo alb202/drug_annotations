@@ -196,7 +196,7 @@ def transform_chembl_mechanisms(mechanisms: DataFrame) -> DataFrame:
 """ Formatting nodes and edges"""
 
 
-def chembl_targets_format(targets: DataFrame) -> Tuple[DataFrame, DataFrame]:
+def format_chembl_targets(targets: DataFrame) -> Tuple[DataFrame, DataFrame]:
     """Format the chemical targets data into edge and node datasets."""
 
     edge_1 = reformat_edges(
@@ -231,7 +231,7 @@ def chembl_targets_format(targets: DataFrame) -> Tuple[DataFrame, DataFrame]:
     return concat([edge_1, edge_2]).reset_index(drop=True), concat([node_1]).reset_index(drop=True)
 
 
-def chembl_mechanisms_format(mechanisms: DataFrame):
+def format_chembl_mechanisms(mechanisms: DataFrame):
     """Format the chemical mechanisms data into edge datasets."""
 
     edge_1 = reformat_edges(
@@ -258,7 +258,7 @@ def chembl_mechanisms_format(mechanisms: DataFrame):
     return concat([edge_1, edge_2]).reset_index(drop=True), None
 
 
-def chembl_activities_format(activities: DataFrame):
+def format_chembl_activities(activities: DataFrame):
     """Format the chemical activities data into edge datasets."""
 
     edge_1 = reformat_edges(
@@ -275,7 +275,7 @@ def chembl_activities_format(activities: DataFrame):
     return concat([edge_1]).reset_index(drop=True), None
 
 
-def chembl_molecules_format(molecules: DataFrame):
+def format_chembl_molecules(molecules: DataFrame):
     """Format the molecule data into node datasets."""
 
     node_1 = reformat_nodes(

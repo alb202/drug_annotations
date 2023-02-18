@@ -4,7 +4,7 @@ import numpy as np
 import swifter
 
 
-def get_chembl_structures() -> DataFrame:
+def get_chembl_structures(n_test: int = None) -> DataFrame:
     """Get the molecular structures from the chembl FTP.
 
 
@@ -16,14 +16,14 @@ def get_chembl_structures() -> DataFrame:
     url = "https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_31/chembl_31_chemreps.txt.gz"
 
     df = (
-        read_csv(url, compression="gzip", comment=None, sep="\t", header=0)
+        read_csv(url, compression="gzip", comment=None, sep="\t", header=0, nrows=n_test)
         .loc[:, ["chembl_id", "canonical_smiles", "standard_inchi"]]
         .rename(columns={"chembl_id": "chembl_compound_id", "canonical_smiles": "smiles", "standard_inchi": "inchi"})
     )
     return df
 
 
-def get_chembl_uniprot_mappings() -> DataFrame:
+def get_chembl_uniprot_mappings(n_test: int = None) -> DataFrame:
     """Get the uniprot mappings from the chembl FTP.
 
     Returns:
@@ -36,6 +36,7 @@ def get_chembl_uniprot_mappings() -> DataFrame:
         url,
         comment="#",
         sep="\t",
+        nrows=n_test,
         header=None,
         names=["uniprot_accession", "chembl_target_id", "name", "target_type"],
     )
@@ -44,7 +45,7 @@ def get_chembl_uniprot_mappings() -> DataFrame:
     return df
 
 
-def chembl_structures_format(chembl_structures: DataFrame) -> DataFrame:
+def format_chembl_structures(chembl_structures: DataFrame) -> DataFrame:
     """Format the molecular structures datasets.
 
     Args:
@@ -78,7 +79,7 @@ def chembl_structures_format(chembl_structures: DataFrame) -> DataFrame:
     return concat([edge_1, edge_2]).reset_index(drop=True)
 
 
-def chembl_uniprot_mappings_format(chembl_uniprot_mappings: DataFrame) -> DataFrame:
+def format_chembl_uniprot_mappings(chembl_uniprot_mappings: DataFrame) -> DataFrame:
     """Format the uniprot mappings datasets.
 
     Args:
@@ -100,3 +101,7 @@ def chembl_uniprot_mappings_format(chembl_uniprot_mappings: DataFrame) -> DataFr
     )
 
     return concat([edge_1]).reset_index(drop=True)
+
+
+# a = get_chembl_structures()
+# b = get_chembl_uniprot_mappings()

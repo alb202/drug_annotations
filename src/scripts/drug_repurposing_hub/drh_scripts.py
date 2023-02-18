@@ -8,7 +8,7 @@ from pandas import isna
 """ Extract """
 
 
-def get_drh_drugs() -> DataFrame:
+def get_drh_drugs(n_test: int = None) -> DataFrame:
     """Get the drug repurposing hub drug datasets
 
     Returns:
@@ -16,7 +16,7 @@ def get_drh_drugs() -> DataFrame:
 
     """
     url = "https://s3.amazonaws.com/data.clue.io/repurposing/downloads/repurposing_drugs_20200324.txt"
-    df = read_csv(url, sep="\t", header=0, index_col=False, comment="!")
+    df = read_csv(url, sep="\t", header=0, index_col=False, comment="!", nrows=n_test)
     df["moa"] = df["moa"].replace(
         "nuclear factor erythroid derived | like (NRF2) activator",
         "nuclear factor erythroid derived-like (NRF2) activator",
@@ -24,7 +24,7 @@ def get_drh_drugs() -> DataFrame:
     return df
 
 
-def get_drh_samples() -> DataFrame:
+def get_drh_samples(n_test: int = None) -> DataFrame:
     """Get the drug repurposing hub sample datasets
 
     Returns:
@@ -32,7 +32,7 @@ def get_drh_samples() -> DataFrame:
 
     """
     url = "https://s3.amazonaws.com/data.clue.io/repurposing/downloads/repurposing_samples_20200324.txt"
-    df = read_csv(url, sep="\t", header=0, index_col=False, comment="!")
+    df = read_csv(url, sep="\t", header=0, index_col=False, comment="!", nrows=n_test)
     df["broad_compound_id"] = df["broad_id"].apply(lambda broad_id: broad_id[:13])
     return df
 
@@ -123,7 +123,7 @@ def transform_drh_details(drugs: DataFrame) -> DataFrame:
 """ Formatting nodes and edges"""
 
 
-def drh_annotations_format(annotations: DataFrame) -> DataFrame:
+def format_drh_annotations(annotations: DataFrame) -> DataFrame:
     """Format the drug repurposing hub annotations.
 
     Args:
@@ -156,7 +156,7 @@ def drh_annotations_format(annotations: DataFrame) -> DataFrame:
     return concat([edge_1, edge_2]).reset_index(drop=True)
 
 
-def drh_structures_format(structures: DataFrame) -> DataFrame:
+def format_drh_structures(structures: DataFrame) -> DataFrame:
     """Format the drug repurposing hub structures.
 
     Args:
@@ -189,7 +189,7 @@ def drh_structures_format(structures: DataFrame) -> DataFrame:
     return concat([edge_1, edge_2]).reset_index(drop=True)
 
 
-def drh_altids_format(altids: DataFrame) -> DataFrame:
+def format_drh_altids(altids: DataFrame) -> DataFrame:
     """Format the drug repurposing hub alternative identifiers
 
     Args:
@@ -222,7 +222,7 @@ def drh_altids_format(altids: DataFrame) -> DataFrame:
     return concat([edge_1, edge_2]).reset_index(drop=True)
 
 
-def drh_details_format(details: DataFrame) -> DataFrame:
+def format_drh_details(details: DataFrame) -> DataFrame:
     """Format the drug repurposing hub compound details
 
     Args:

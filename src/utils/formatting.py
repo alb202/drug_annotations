@@ -2,24 +2,49 @@ from yaml import load, SafeLoader
 from pandas import DataFrame
 from dagster import file_relative_path
 
-with open(file_relative_path(dunderfile=__file__, relative_path="../config/formatting_config.yaml"), "r") as f:
+with open(file_relative_path(dunderfile=__file__, relative_path="../../config/formatting_config.yaml"), "r") as f:
     config_dict = load(stream=f, Loader=SafeLoader)
+
+
+class InvalidColumnError(Exception):
+    """Raised when an new column is not provided"""
+
+    def __init__(self, msg=str):
+        super().__init__(msg)
+
+
+class InvalidTypeError(Exception):
+    """Raised when an invalid type is provided"""
+
+    def __init__(self, types: list):
+        self.types = ",".join(types)
+        self.message = f"Type(s) '{self.types}' are not valid"
+        super().__init__(self.message)
+
+
+class InvalidSourceError(Exception):
+    """Raised when an invalid source is provided"""
+
+    def __init__(self, sources: list):
+        self.sources = ",".join(sources)
+        self.message = f"Source(s) '{self.sources}' are not valid"
+        super().__init__(self.message)
 
 
 def rename_column(df: DataFrame, new_column: str, old_column: str = None, column_value: bool = True) -> DataFrame:
     """Renames columns during during formatting of edge and node dataframes"""
 
-    if not isinstance(new_column, str):
-        raise ValueError("A column name must be provided as a string")
-    elif not isinstance(old_column, str) and not isinstance(column_value, str):
-        raise ValueError("An existing column must be a string, or a new column value must be provided")
-    elif isinstance(old_column, str) and isinstance(column_value, str):
-        raise ValueError("Provide either an existing column name or a new column value")
-    elif isinstance(old_column, str) and old_column not in df.columns:
-        raise ValueError(f"The existing column '{old_column}' was not found in the dataframe")
+    if not new_column:
+        raise InvalidColumnError("A new column must be provided")
+    elif not old_column and not column_value:
+        raise InvalidColumnError("An existing column or a new column value must be provided")
+    elif old_column and column_value:
+        raise InvalidColumnError("Provide either an existing column name or a new column value")
+    elif old_column and old_column not in df.columns:
+        raise InvalidColumnError(f"The existing column '{old_column}' was not found in the dataframe")
     elif new_column == old_column:
         pass
-    elif isinstance(old_column, str) and old_column in df.columns:
+    elif old_column and old_column in df.columns:
         df[new_column] = df[old_column]
     else:
         df[new_column] = column_value
@@ -58,30 +83,29 @@ def reformat_edges(
         if from_type not in config_dict.get("validation").get("node_types")
     ]
     if invalid_from_types:
-        raise (f'From types {".".join(invalid_from_types)} are not valid')
+        raise InvalidTypeError(types=invalid_from_types)
 
     invalid_to_types = [
         to_type for to_type in df["to_type"].unique() if to_type not in config_dict.get("validation").get("node_types")
     ]
     if invalid_to_types:
-        raise (f'To types {".".join(invalid_to_types)} are not valid')
+        raise InvalidTypeError(types=invalid_to_types)
 
     invalid_sources = [
         source for source in df["source"].unique() if source not in config_dict.get("validation").get("sources")
     ]
     if invalid_sources:
-        raise (f'Sources {".".join(invalid_sources)} are not valid')
+        raise InvalidTypeError(types=invalid_sources)
 
     df["parameters"] = df.loc[:, parameters].to_dict(orient="records") if len(parameters) else None
 
-    df = (
+    return (
         df.loc[:, ["from_type", "from_value", "label", "to_type", "to_value", "source", "parameters"]]
         .dropna(how="any", subset=["from_type", "from_value", "label", "to_type", "to_value", "source"], axis=0)
         .drop_duplicates(["from_type", "from_value", "label", "to_type", "to_value", "source"], keep="first")
         .sort_values(["from_type", "from_value", "label", "to_type", "to_value", "source"])
         .reset_index(drop=True)
     )
-    return df
 
 
 def reformat_nodes(
@@ -108,20 +132,20 @@ def reformat_nodes(
         if node_type not in config_dict.get("validation").get("node_types")
     ]
     if invalid_node_types:
-        raise (f'Node types {".".join (invalid_node_types)} are not valid')
+        raise InvalidTypeError(types=invalid_node_types)
 
     invalid_sources = [
         source for source in df["source"].unique() if source not in config_dict.get("validation").get("sources")
     ]
     if invalid_sources:
-        raise (f'Sources {".".join(invalid_sources)} are not valid')
+        raise InvalidSourceError(types=invalid_sources)
 
     df["parameters"] = df.loc[:, parameters].to_dict(orient="records") if len(parameters) else None
-    df = (
+
+    return (
         df.loc[:, ["node_type", "value", "source", "parameters"]]
         .dropna(how="any", subset=["node_type", "value", "source"], axis=0)
         .drop_duplicates(["node_type", "value", "source"], keep="first")
         .sort_values(["node_type", "value", "source"])
         .reset_index(drop=True)
     )
-    return df

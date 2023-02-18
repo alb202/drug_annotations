@@ -107,7 +107,7 @@ def get_hgnc_additional(hgnc: DataFrame, n_jobs: int = 4, n_test: int = -1) -> D
     return df
 
 
-def hgnc_concat_additional(hgnc_df: DataFrame, hgnc_additional: DataFrame) -> DataFrame:
+def concat_hgnc_additional(hgnc_df: DataFrame, hgnc_additional: DataFrame) -> DataFrame:
     """Concatenate additional information from HGNC for genes missing NCBI ID annotations"""
     df = concat(
         [
@@ -130,7 +130,7 @@ def hgnc_concat_additional(hgnc_df: DataFrame, hgnc_additional: DataFrame) -> Da
     return df
 
 
-def hgnc_format(hgnc: DataFrame) -> Tuple[DataFrame, DataFrame]:
+def format_hgnc(hgnc: DataFrame) -> Tuple[DataFrame, DataFrame]:
     """Format the hgnc gene datasets.
 
     Args:

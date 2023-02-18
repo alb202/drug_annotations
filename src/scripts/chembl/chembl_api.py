@@ -12,6 +12,15 @@ from joblib import delayed, Parallel
 disable_warnings(InsecureRequestWarning)
 
 
+class InvalidEndpointError(Exception):
+    """Raised when an invalid endpoint is provided"""
+
+    def __init__(self, endpoint: str):
+        self.endpoint = endpoint
+        self.message = f"Invalid ChEMBL endpoint: {endpoint}"
+        super().__init__(self.message)
+
+
 class ChemblAPI:
     """API for accessing ChEMBL data"""
 
@@ -91,8 +100,7 @@ class ChemblAPI:
 
     def _check_endpoint(self, endpoint) -> None:
         if endpoint not in self.ENDPOINTS:
-            error_message = f'"{endpoint}" endpoint not available. Must be one of: {", ".join(self.ENDPOINTS.keys())}"'
-            raise ValueError(error_message)
+            raise InvalidEndpointError(endpoint=endpoint)
 
     def retrieve_data(
         self, endpoint: str, max_records: int = -1, offset: int = 0, limit: int = 1000, **kwags
@@ -138,5 +146,5 @@ class ChemblAPI:
 
 
 # a = ChemblAPI(n_jobs=2)
-# b = a.retrieve_data(endpoint="target", max_records=-1, limit=500)
+# b = a.retrieve_data(endpoint="target", max_records=50, limit=50)
 # print(b)
