@@ -102,11 +102,6 @@ docker compose up -d
 ```
 
 
-Additionally, you can use Docker compose to run the pipeline with a Docker postgres database container. After creating the drug_annotations container, run docker compose: 
-```
-docker compose up -d
-```
-
 You can also run the dagster pipeline directly from the 'drug_annotations' folder. Simpy run:
 ```
 python __main__.py
