@@ -80,20 +80,26 @@ Build the docker container
 docker build -t drug_annotations .
 ```
 
-Launch the container. It is currently set to run on 'localhost', and the command will map the docker port (3000) to your port 8080. You'll also need to set a local folder as a volume to access the results of the pipeline.
+Launch the container. It is currently set to run on 'localhost', and the command will map the Dagit port 3000 to your port 3000. You'll also need to set a local folder as a volume to access the results of the pipeline.
 
 ```
-docker run -dp 8080:3000 -v <local folder>:/opt/dagster/app/data drug_annotations
+docker run -dp 3000:3000 -v <local folder>:/opt/dagster/app/data drug_annotations
 ```
 The local folder can be any empty, writable location. On Windows, try '%cd%/data'. On linux, try '$(pwd)/data'
 
 Go to the address below and start the pipeline from the Dagit interface
 
 ```
-localhost:8080
+localhost:3000
 ```
 
 The output of the pipeline will appear in the folder mounted during the docker run command
+
+
+Additionally, you can use Docker compose to run the pipeline with a Docker postgres database container. After creating the drug_annotations container, run docker compose: 
+```
+docker compose up -d
+```
 
 You can also run the dagster pipeline directly from the 'drug_annotations' folder. simpy run:
 ```
